@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  background: #FBF7F0;
+  -webkit-font-smoothing: antialiased;
+}
+
+input::placeholder {
+  color: #A29B8E;
+}
+
+@keyframes lpSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes lpBar {
+  0% { width: 4%; }
+  22% { width: 42%; }
+  55% { width: 68%; }
+  100% { width: 93%; }
+}
+
+@keyframes logoMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* hover do protótipo (style-hover) convertido pra classes */
+.lp-btn {
+  transition: background 0.15s ease;
+}
+.lp-btn:hover {
+  background: #BC3A25 !important;
+}
+.lp-back:hover {
+  color: #D4432C !important;
+}
+.lp-footer-link:hover {
+  color: #FFFFFF !important;
+}
+.lp-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* foco do protótipo (style-focus) */
+.lp-input:focus,
+.lp-select:focus {
+  border-color: #D4432C !important;
+  box-shadow: 0 0 0 3px rgba(212, 67, 44, 0.12) !important;
+}
