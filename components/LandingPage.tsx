@@ -14,7 +14,7 @@ const MSGS = [
 ];
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'];
 
-const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL || '#';
+const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL || '/politica-de-privacidade';
 const FARMACIAS_ATENDIDAS = process.env.NEXT_PUBLIC_FARMACIAS || '+100';
 
 const LOGO_COUNT = 7;
