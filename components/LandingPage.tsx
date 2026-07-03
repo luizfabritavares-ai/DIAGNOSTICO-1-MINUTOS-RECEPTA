@@ -391,7 +391,20 @@ export default function LandingPage() {
     pdfSrc, pdfFilename, farmaciaDone, privacyUrl: PRIVACY_URL,
   };
 
-  const anyLogoAlive = logoStatus.some((s) => s !== 'fail');
+  const anyLogoAlive = logoStatus.some((s) => s === 'ok');
+
+  // Proba os logos via new Image() (onError de <img> SSR dispara antes da hidratação e se perde)
+  useEffect(() => {
+    let alive = true;
+    Array.from({ length: LOGO_COUNT }, (_, i) => {
+      const im = new window.Image();
+      im.onload = () => { if (alive) onLogoOk(i); };
+      im.onerror = () => { if (alive) onLogoFail(i); };
+      im.src = '/farmacias/f' + (i + 1) + '.png';
+    });
+    return () => { alive = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const onLogoFail = (i: number) =>
     setLogoStatus((st) => {
       if (st[i] === 'fail') return st;
@@ -418,7 +431,7 @@ export default function LandingPage() {
           marginRight: 16,
           borderRadius: 14,
           overflow: 'hidden',
-          display: logoStatus[i] === 'fail' ? 'none' : 'flex',
+          display: logoStatus[i] === 'ok' ? 'flex' : 'none',
           alignItems: 'center',
           justifyContent: 'center',
           background: '#FFFFFF',
