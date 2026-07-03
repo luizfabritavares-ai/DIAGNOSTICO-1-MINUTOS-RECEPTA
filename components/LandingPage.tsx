@@ -442,7 +442,7 @@ export default function LandingPage() {
         <img
           src={'/farmacias/f' + (i + 1) + '.png'}
           alt={'Farmácia atendida ' + (i + 1)}
-          style={{ maxWidth: '86%', maxHeight: '78%', objectFit: 'contain', display: 'block' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           onError={() => onLogoFail(i)}
           onLoad={() => onLogoOk(i)}
         />
