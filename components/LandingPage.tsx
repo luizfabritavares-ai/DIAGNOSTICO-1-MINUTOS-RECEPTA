@@ -314,6 +314,13 @@ export default function LandingPage() {
     setShowError(false);
     startProcessing();
 
+    /* Evento principal da campanha: Registro concluído (CompleteRegistration).
+       Dispara em TODO envio válido do form, no momento do envio — assim o
+       evento não se perde se o lead fechar a aba durante a geração (1-2 min). */
+    try {
+      window.receptaTrack?.('CompleteRegistration', { content_name: 'diagnostico' });
+    } catch {}
+
     const payload: Record<string, string> = {
       nome: fields.nome.trim(),
       telefone: digits(fields.telefone),

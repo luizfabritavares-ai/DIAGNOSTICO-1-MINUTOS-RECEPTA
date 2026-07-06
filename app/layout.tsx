@@ -37,7 +37,7 @@ function buildTrackingScript(): string {
     );
   }
   parts.push(
-    "window.receptaTrack=function(name,params){try{if(window.fbq){name==='Lead'?window.fbq('track','Lead',params||{}):window.fbq('trackCustom',name,params||{});}}catch(e){}try{if(window.gtag){window.gtag('event',name,params||{});}}catch(e){}};"
+    "window.receptaTrack=function(name,params){try{if(window.fbq){['Lead','CompleteRegistration'].indexOf(name)>-1?window.fbq('track',name,params||{}):window.fbq('trackCustom',name,params||{});}}catch(e){}try{if(window.gtag){window.gtag('event',name,params||{});}}catch(e){}};"
   );
   return parts.join('\n');
 }
