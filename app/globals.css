@@ -47,3 +47,101 @@ input::placeholder {
   border-color: #D4432C !important;
   box-shadow: 0 0 0 3px rgba(212, 67, 44, 0.12) !important;
 }
+
+/* ===== Overlay cinematográfico (loading + stories) ===== */
+@keyframes lpOvIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.lp-ov-in {
+  animation: lpOvIn 0.35s ease both;
+}
+
+@keyframes lpBreathe {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+.lp-breathe {
+  animation: lpBreathe 3.2s ease-in-out infinite;
+}
+
+@keyframes lpMsgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.lp-msg-in {
+  animation: lpMsgIn 0.5s ease both;
+}
+
+@keyframes lpSeg {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes lpRadar {
+  0% { transform: scale(0.55); opacity: 0.85; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+.lp-radar {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(212, 67, 44, 0.55);
+  animation: lpRadar 2.2s ease-out infinite;
+}
+
+@keyframes lpArcSpin {
+  to { transform: rotate(360deg); }
+}
+.lp-arc {
+  animation: lpArcSpin 1.6s linear infinite;
+}
+
+@keyframes lpPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+.lp-pulse {
+  animation: lpPulse 1.8s ease-in-out infinite;
+}
+
+/* páginas do story: crossfade + zoom suave (dissolve de cinema) */
+.lp-page {
+  opacity: 0;
+  transform: scale(1.045);
+  transition: opacity 0.55s ease, transform 1.6s cubic-bezier(0.22, 0.7, 0.3, 1);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.lp-page-on {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes lpCurtain {
+  0% { opacity: 0; }
+  38% { opacity: 1; }
+  62% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.lp-curtain {
+  animation: lpCurtain 0.65s ease both;
+}
+
+@keyframes lpHint {
+  0%, 55% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+.lp-hint {
+  animation: lpHint 4.5s ease 1.2s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-page {
+    transform: none;
+    transition: opacity 0.3s ease;
+  }
+  .lp-radar, .lp-pulse, .lp-breathe {
+    animation: none;
+  }
+}

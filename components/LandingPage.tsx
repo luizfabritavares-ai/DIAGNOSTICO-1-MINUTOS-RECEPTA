@@ -4,14 +4,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import FormCard, { FormFields, Phase } from './FormCard';
 import HeroBeams from './HeroBeams';
+import CinematicOverlay, { OverlayStage, preloadPdfEngine } from './CinematicOverlay';
 
 const ENDPOINT = 'https://main-production-fe25.up.railway.app/webhook/lp-diagnostico';
 const MSGS = [
   'Puxando seu Google Meu Negócio…',
   'Olhando seu Instagram…',
   'Mapeando concorrentes no seu raio…',
+  'Comparando com a referência da sua região…',
+  'Calculando sua nota de presença digital…',
   'Montando seu diagnóstico…',
 ];
+/* depois da 1ª passada, as mensagens voltam pra este índice (loop vivo em gerações longas) */
+const MSGS_LOOP_FROM = 2;
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_adset', 'utm_ad_id', 'fbclid', 'gclid'];
 
 const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL || '/politica-de-privacidade';
@@ -154,6 +159,7 @@ export default function LandingPage() {
   const [pdfSrc, setPdfSrc] = useState('');
   const [pdfFilename, setPdfFilename] = useState('diagnostico-recepta.pdf');
   const [farmaciaDone, setFarmaciaDone] = useState('');
+  const [viewerOpen, setViewerOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
   const [pastScroll, setPastScroll] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -300,9 +306,10 @@ export default function LandingPage() {
   const startProcessing = useCallback(() => {
     setPhase('processing');
     setProcIdx(0);
+    preloadPdfEngine(); /* já baixa o motor de render enquanto o diagnóstico é gerado */
     if (procTimer.current) clearInterval(procTimer.current);
     procTimer.current = setInterval(() => {
-      setProcIdx((i) => Math.min(i + 1, MSGS.length - 1));
+      setProcIdx((i) => (i + 1 < MSGS.length ? i + 1 : MSGS_LOOP_FROM));
     }, 3400);
   }, []);
 
@@ -354,6 +361,7 @@ export default function LandingPage() {
           setPdfFilename(data.pdf_filename || 'diagnostico-recepta.pdf');
           setFarmaciaDone(data.nome_farmacia || fields.farmacia.trim());
           setPhase('result_pdf');
+          setViewerOpen(true);
           try {
             window.receptaTrack?.('diagnostico_exibido', { lead_id: data.lead_id });
           } catch {}
@@ -378,6 +386,20 @@ export default function LandingPage() {
       : 'Preencha cidade e UF, e aceite os termos.';
   const showStickyBar = isMobile && pastScroll && phase === 'form';
 
+  const overlayStage: OverlayStage =
+    phase === 'processing' ? 'processing' : phase === 'result_pdf' && viewerOpen ? 'reveal' : 'hidden';
+
+  /* trava o scroll da página enquanto o overlay cinematográfico está aberto */
+  useEffect(() => {
+    const lock = overlayStage !== 'hidden';
+    document.documentElement.style.overflow = lock ? 'hidden' : '';
+    document.body.style.overflow = lock ? 'hidden' : '';
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
+  }, [overlayStage]);
+
   const mp = mockP > 0 ? mockP : 1;
   const mockRingStyle: CSSProperties = {
     flexShrink: 0,
@@ -396,6 +418,7 @@ export default function LandingPage() {
     formStep, nextStep, backStep, phase,
     procMsg: MSGS[procIdx], showError, errorMsg, submit,
     pdfSrc, pdfFilename, farmaciaDone, privacyUrl: PRIVACY_URL,
+    onOpenViewer: () => setViewerOpen(true),
   };
 
   const anyLogoAlive = logoStatus.some((s) => s === 'ok');
@@ -964,6 +987,16 @@ export default function LandingPage() {
           {isMobile && <div style={{ height: 66 }} />}
         </div>
       </div>
+
+      {/* ============ OVERLAY CINEMATOGRÁFICO (loading + diagnóstico) ============ */}
+      <CinematicOverlay
+        stage={overlayStage}
+        procMsg={MSGS[procIdx]}
+        pdfSrc={pdfSrc}
+        pdfFilename={pdfFilename}
+        farmaciaDone={farmaciaDone}
+        onClose={() => setViewerOpen(false)}
+      />
     </div>
   );
 }

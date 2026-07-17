@@ -34,6 +34,7 @@ export interface FormCardProps {
   pdfFilename: string;
   farmaciaDone: string;
   privacyUrl: string;
+  onOpenViewer: () => void;
 }
 
 const UFS = [
@@ -109,7 +110,7 @@ export default function FormCard(props: FormCardProps) {
   const {
     variant, fields, consent, digitsLen, setField, toggleConsent,
     formStep, nextStep, backStep, phase, procMsg, showError, errorMsg,
-    submit, pdfSrc, pdfFilename, farmaciaDone, privacyUrl,
+    submit, pdfSrc, pdfFilename, farmaciaDone, privacyUrl, onOpenViewer,
   } = props;
 
   const cardStyle: CSSProperties =
@@ -420,17 +421,12 @@ export default function FormCard(props: FormCardProps) {
             Também enviamos no seu WhatsApp
           </div>
           <div style={{ fontSize: 19, fontWeight: 800, lineHeight: 1.2 }}>
-            Pronto, {farmaciaDone}! Aqui está o seu diagnóstico:
+            Pronto, {farmaciaDone}! Seu diagnóstico está pronto.
           </div>
-          <iframe
-            src={pdfSrc}
-            title="Diagnóstico"
-            style={{ width: '100%', height: 440, border: '1px solid #E7DFD2', borderRadius: 12, background: '#FBF7F0' }}
-          />
-          <a
+          <button
+            type="button"
             className="lp-btn"
-            href={pdfSrc}
-            download={pdfFilename}
+            onClick={onOpenViewer}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -440,14 +436,41 @@ export default function FormCard(props: FormCardProps) {
               height: 54,
               background: '#D4432C',
               color: '#FFFFFF',
+              border: 'none',
               borderRadius: 12,
+              fontFamily: 'Montserrat, sans-serif',
               fontWeight: 800,
               fontSize: 15,
-              textDecoration: 'none',
+              cursor: 'pointer',
               boxSizing: 'border-box',
             }}
           >
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 4l14 8-14 8V4z" />
+            </svg>
+            Ver meu diagnóstico
+          </button>
+          <a
+            href={pdfSrc}
+            download={pdfFilename}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              width: '100%',
+              height: 48,
+              background: '#FFFFFF',
+              color: '#D4432C',
+              border: '1.5px solid #D4432C',
+              borderRadius: 12,
+              fontWeight: 700,
+              fontSize: 14,
+              textDecoration: 'none',
+              boxSizing: 'border-box',
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#D4432C" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
             </svg>
             Baixar PDF

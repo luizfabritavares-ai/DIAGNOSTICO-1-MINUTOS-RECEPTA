@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -12,6 +12,13 @@ const montserrat = localFont({
   ],
   display: 'swap',
 });
+
+/* viewport-fit=cover: overlay full-screen respeita o notch (safe-area) no iPhone */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
 
 export const metadata: Metadata = {
   title: 'Diagnóstico Digital Grátis para Farmácias | Recepta Plus',
